@@ -1,58 +1,83 @@
 from dependancies import FileIO
+from dependancies import prompts
 
 data = []
 
-def run():
-    success = True
-    next = False
-    distance = input("\nInput a distance: ")
-    if distance == "e":
-        print()
-        return
+def addData():
+    prompts.printLine()
+    print()
 
-    power = input("Power fraction: ")
+    distance = input("Input distance: ")
+    power = input("Input power fraction: ")
+
+    outcome = []
 
     active = True
-
     while active:
-        s_success = input("Success (y/n): ")
-        while not next:
-            if s_success.lower()[:1] == "y":
-                success = True
-                next = True
-            elif s_success.lower()[:1] == "n":
-                success = False
-                next = True
-            elif s_success.lower()[:1] == "e":
-                run()
-                return
-            else:
-                s_success = input("Success (y/n): ")
+        outcome.append(input("Input outcome (1, 0, -1): "))
 
-        print(end="\n")
-        print("Distance: " + str(distance))
-        print("Power: " + str(power))
-        print("Success: " + "Scored" if success else "Missed")
-
-        confirm = input("\tConfirm (y/n): ")
-        print("\n")
-        if confirm.lower()[:1] == "n":
+        if outcome[-1].lower()[0] == "e":
+            del outcome[-1]
+            active = False
             continue
 
-        data.append((distance, power, 1 if success else 0))
-        next = False
-    run()
+        if not (outcome[-1] == "1" or outcome[-1] == "0" or outcome[-1] == "-1"):
+            print("INVALID. Last entry void")
+            del outcome[-1]
+
+    print()
+
+    for i in range(0, len(outcome)):
+        print(str(i) + ": Distance: " + str(distance) + " Power: " + str(power) + " Outcome: " + str(outcome[i]))
+        if prompts.confirm():
+            data.append((float(distance), float(power), int(outcome[i])))
+
+    prompts.printLine()
+    print()
+
+def manage():
+    prompts.printLine()
+    print()
+
+    for i in range(0, len(data)):
+        print(str(i) + ": Distance: " + str(data[i][0]) + " Power: " + str(data[i][1]) + " Outcome: " + str(data[i][2]))
+
+    next = False
+    while not next:
+        print("\nType \"e\" to exit and \"d\" to modify.")
+        command = input("\tCommand: ").lower()[0]
+
+        if command == "e":
+            next = True
+        elif command == "d":
+            print()
+            index = input("Input index to delete: ")
+            print(str(index) + ": Distance: " + str(data[int(index)][0]) + " Power: " + str(data[int(index)][1]) + " Outcome: " + str(data[int(index)][1]))
+            if not prompts.confirm():
+                continue
+            del data[int(index)]
+            for i in range(0, len(data)):
+                print(str(i) + ": Distance: " + str(data[i][0]) + " Power: " + str(data[i][1]) + " Outcome: " + str(data[i][2]))
+
+            print()
+
+    prompts.printLine()
+    print()
+
+def help():
+    pass
 
 active = True
-
 while active:
     command = input("Input a command: ")
-    if command == "save":
+    if command.lower() == "save":
         name = input("Input file name to use: ")
         if input("\tConfirm (y/n): ").lower()[:1] == "n":
             continue
         FileIO.save(name, data)
-    elif command == "exit":
+
+        print()
+    elif command.lower() == "exit":
         name = input("Input file name to use: ")
         if input("\tConfirm (y/n): ").lower()[:1] == "n":
             active = False
@@ -61,7 +86,7 @@ while active:
 
         active = False
         continue
-    elif command == "recall":
+    elif command.lower() == "recall":
         data.clear()
         data = FileIO.recall(input("Enter file name: "))
         if input("\tConfirm (y/n): ").lower()[:1] == "n":
@@ -71,16 +96,13 @@ while active:
                 print("Recalled file!")
             else:
                 print("Recall failed")
-    elif command == "value":
-            run()
-    elif command == "print":
-        iteration = 0
-        for x in data:
-            print(str(iteration), end=": ")
-            print("Distance: " + str(x[0]), end=" ")
-            print("Power: " + str(x[1]), end=" ")
-            print("Success: " + str(x[2]))
-            iteration += 1
+            print()
+    elif command.lower() == "add":
+            addData()
+    elif command.lower() == "manage":
+        manage()
+    elif command.lower() == "help":
+        help()
     else:
-        print("Unknown command, please try again.\t")
+        print("Unknown command, please try again.\n")
 
