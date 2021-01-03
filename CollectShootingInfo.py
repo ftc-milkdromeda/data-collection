@@ -8,13 +8,14 @@ def addData():
     print()
 
     distance = input("Input distance: ")
-    power = input("Input power fraction: ")
+    power = input("Input RPM: ")
 
     outcome = []
 
     active = True
+    iteration = 0
     while active:
-        outcome.append(input("Input outcome (1, 0, -1): "))
+        outcome.append(input(str(iteration) + ": " + "Input outcome (1, 0, -1): "))
 
         if outcome[-1].lower()[0] == "e":
             del outcome[-1]
@@ -25,7 +26,10 @@ def addData():
             print("INVALID. Last entry void")
             del outcome[-1]
 
+        iteration += 1
+
     print()
+    print(str(iteration) + " new data points added.")
 
     for i in range(0, len(outcome)):
         print(str(i) + ": Distance: " + str(distance) + " Power: " + str(power) + " Outcome: " + str(outcome[i]))
