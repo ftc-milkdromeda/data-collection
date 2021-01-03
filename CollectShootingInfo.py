@@ -17,7 +17,7 @@ def addData():
     while active:
         outcome.append(input(str(iteration) + ": " + "Input outcome (1, 0, -1): "))
 
-        if outcome[-1].lower()[0] == "e":
+        if (outcome[-1] + " ").lower()[0] == "e":
             del outcome[-1]
             active = False
             continue
