@@ -8,9 +8,9 @@ def addData():
     print()
 
     distance = input("Input distance: ")
-    power = input("Input RPM: ")
 
     outcome = []
+    rpm = []
 
     active = True
     iteration = 0
@@ -25,6 +25,9 @@ def addData():
         if not (outcome[-1] == "1" or outcome[-1] == "0" or outcome[-1] == "-1"):
             print("INVALID. Last entry void")
             del outcome[-1]
+            continue
+
+        rpm.append(input(str(iteration) + ": " + "Input RPM: "))
 
         iteration += 1
 
@@ -32,9 +35,9 @@ def addData():
     print(str(iteration) + " new data points added.")
 
     for i in range(0, len(outcome)):
-        print(str(i) + ": Distance: " + str(distance) + " Power: " + str(power) + " Outcome: " + str(outcome[i]))
+        print(str(i) + ": Distance: " + str(distance) + " RPM: " + str(rpm[i]) + " Outcome: " + str(outcome[i]))
         if prompts.confirm():
-            data.append((float(distance), float(power), int(outcome[i])))
+            data.append((float(distance), float(rpm[i]), int(outcome[i])))
 
     prompts.printLine()
     print()
@@ -44,7 +47,7 @@ def manage():
     print()
 
     for i in range(0, len(data)):
-        print(str(i) + ": Distance: " + str(data[i][0]) + " Power: " + str(data[i][1]) + " Outcome: " + str(data[i][2]))
+        print(str(i) + ": Distance: " + str(data[i][0]) + " RPM: " + str(data[i][1]) + " Outcome: " + str(data[i][2]))
 
     next = False
     while not next:
@@ -56,12 +59,12 @@ def manage():
         elif command == "d":
             print()
             index = input("Input index to delete: ")
-            print(str(index) + ": Distance: " + str(data[int(index)][0]) + " Power: " + str(data[int(index)][1]) + " Outcome: " + str(data[int(index)][1]))
+            print(str(index) + ": Distance: " + str(data[int(index)][0]) + " RPM: " + str(data[int(index)][1]) + " Outcome: " + str(data[int(index)][1]))
             if not prompts.confirm():
                 continue
             del data[int(index)]
             for i in range(0, len(data)):
-                print(str(i) + ": Distance: " + str(data[i][0]) + " Power: " + str(data[i][1]) + " Outcome: " + str(data[i][2]))
+                print(str(i) + ": Distance: " + str(data[i][0]) + " RPM: " + str(data[i][1]) + " Outcome: " + str(data[i][2]))
 
             print()
 
@@ -79,6 +82,7 @@ while active:
         if input("\tConfirm (y/n): ").lower()[:1] == "n":
             continue
         FileIO.save(name, data)
+        print("File saved")
 
         print()
     elif command.lower() == "exit":
